@@ -1,6 +1,6 @@
 require 'csv'
 
-contents = File.read File.absolute_path("./event_attendees.csv")
+contents = File.read File.absolute_path("../event_manager/event_attendees.csv")
 
 #print first names per line - skip header row
 p "Print First Name per line"
@@ -22,3 +22,9 @@ puts
 #reject any nil value
 puts "Valid Zip codes"
 p csv[:zipcode].compact.map {|x| x.rjust 5,"0"}
+
+puts 
+
+p "Print Name vs Zip Code"
+
+(csv[:first_name].zip csv[:zipcode]).each {|name,zip| puts "#{name} - #{zip}"}
