@@ -18,13 +18,30 @@ puts
 puts "zip_code"
 print csv[:zipcode]
 
+
+parameters = lambda {|rjust_options, sym1, sym2|
+    [rjust_options[sym1] || 5, rjust_options[sym2] || "0"]}
+
 puts
 #reject any nil value
 puts "Valid Zip codes"
-p csv[:zipcode].compact.map {|x| x.rjust 5,"0"}
+def print_csv_field(csv, field, rjust_options = {})
+    #rjust_options = {:pad => 5, :char => "0"}
+    pad, char = yield(rjust_options, :pad, :char)
+    csv[field].compact.map {|x| x.rjust pad,char}
+end
 
+#p csv[:zipcode].compact.map {|x| x.rjust 5,"0"}
+p print_csv_field(csv, :zipcode, &parameters)
+#p print_csv_field(csv, :zipcode, {:pad => 5, :char => "0"}, &parameters)
 puts 
 
 p "Print Name vs Zip Code"
+def print_csv_name_field(csv, name, field, rjust_options = {})
+    #rjust_options = {:pad => 5, :char => "0"}
+    pad, char = yield(rjust_options, :pad, :char)
+    (csv[name].zip(csv[field])).map {|name, field| puts "#{name} - #{field.rjust pad,char}" if !name.nil? && !field.nil?}
+end
 
-(csv[:first_name].zip csv[:zipcode]).each {|name,zip| puts "#{name} - #{zip}"}
+#p (csv[:first_name].zip csv[:zipcode]).each {|name,zip| puts "#{name} - #{zip}"}
+print_csv_name_field(csv, :first_name, :zipcode, &parameters)
